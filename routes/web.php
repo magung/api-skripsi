@@ -21,8 +21,8 @@ $router->get('/hello', function () use ($router) {
     return "Hello World";
 });
 
-$router->get('/list-user', 'UserController@showAll');
-$router->get('/user/{id}', 'UserController@show');
+$router->post('/list-user', 'UserController@showAll');
+$router->post('/user/{id}', 'UserController@show');
 $router->post('/create-user', 'UserController@store');
 $router->post('/update-user/{id}', 'UserController@update');
 $router->post('/delete-user/{id}', 'UserController@delete');

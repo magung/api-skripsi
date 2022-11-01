@@ -40,14 +40,14 @@ class UserController extends Controller
 
     public function store(Request $request) {
         
-        $this->validate($request, [
+        $validator = $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required'
         ]);
 
         $result = [
-            "payload" => $request,
+            "payload" => $validator,
             "error_code" => 422,
             "message" => "sukses"
         ];
@@ -73,7 +73,9 @@ class UserController extends Controller
         $user = User::find($id);
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = Hash::make($request->password);
+        if(isset($request->password)) {
+            $user->password = Hash::make($request->password);
+        }
         $user->save();
         $result = [
             "payload" => $user,
