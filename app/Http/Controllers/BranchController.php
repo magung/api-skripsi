@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Contracts\Validation\Validator;
+use App\Models\Branch;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
-
-class UserController extends Controller
+class BranchController extends Controller
 {
     public function index() {
-        $users = User::with(['branch', 'role'])->get();
+        $branch = Branch::all();
         $result = [
-            "payload" => $users,
+            "payload" => $branch,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -21,8 +18,8 @@ class UserController extends Controller
     }
 
     public function edit($id) {
-        $user = User::find($id);
-        if($user == null) {
+        $branch = Branch::find($id);
+        if($branch == null) {
             $result = [
                 "payload" => null,
                 "error_code" => 404,
@@ -31,7 +28,7 @@ class UserController extends Controller
             return response()->json($result);
         }
         $result = [
-            "payload" => $user,
+            "payload" => $branch,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -41,11 +38,8 @@ class UserController extends Controller
     public function store(Request $request) {
         
         $validator = $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
-            'branch_id' => 'required',
-            'role_id' => 'required'
+            'branch_name' => 'required',
+            'branch_address' => 'required'
         ]);
 
         $result = [
@@ -54,19 +48,13 @@ class UserController extends Controller
             "message" => "sukses"
         ];
 
-        
-        
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->branch_id = $request->branch_id;
-        $user->role_id = $request->role_id;
-        
-        $user->save();
+        $branch = new Branch();
+        $branch->branch_name = $request->branch_name;
+        $branch->branch_address = $request->branch_address;
+        $branch->save();
         
         $result = [
-            "payload" => $user,
+            "payload" => $branch,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -75,10 +63,8 @@ class UserController extends Controller
 
     public function update(Request $request, $id) {
         $validator = $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required',
-            'branch_id' => 'required',
-            'role_id' => 'required'
+            'branch_name' => 'required',
+            'branch_address' => 'required'
         ]);
 
         $result = [
@@ -87,8 +73,8 @@ class UserController extends Controller
             "message" => "sukses"
         ];
 
-        $user = User::find($id);
-        if($user == null) {
+        $branch = Branch::find($id);
+        if($branch == null) {
             $result = [
                 "payload" => null,
                 "error_code" => 404,
@@ -96,16 +82,11 @@ class UserController extends Controller
             ];
             return response()->json($result);
         }
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->branch_id = $request->branch_id;
-        $user->role_id = $request->role_id;
-        if(isset($request->password)) {
-            $user->password = Hash::make($request->password);
-        }
-        $user->save();
+        $branch->branch_name = $request->branch_name;
+        $branch->branch_address = $request->branch_address;
+        $branch->save();
         $result = [
-            "payload" => $user,
+            "payload" => $branch,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -113,8 +94,8 @@ class UserController extends Controller
     }
 
     public function delete($id) {
-        $user = User::find($id);
-        if($user == null) {
+        $branch = Branch::find($id);
+        if($branch == null) {
             $result = [
                 "payload" => null,
                 "error_code" => 404,
@@ -122,14 +103,12 @@ class UserController extends Controller
             ];
             return response()->json($result);
         }
-        $user->delete();
+        $branch->delete();
         $result = [
-            "payload" => $user,
+            "payload" => $branch,
             "error_code" => 200,
             "message" => "sukses"
         ];
         return response()->json($result);
     }
-
-    
 }

@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Contracts\Validation\Validator;
+use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
-
-class UserController extends Controller
+class RoleController extends Controller
 {
     public function index() {
-        $users = User::with(['branch', 'role'])->get();
+        $role = Role::all();
         $result = [
-            "payload" => $users,
+            "payload" => $role,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -21,8 +18,8 @@ class UserController extends Controller
     }
 
     public function edit($id) {
-        $user = User::find($id);
-        if($user == null) {
+        $role = Role::find($id);
+        if($role == null) {
             $result = [
                 "payload" => null,
                 "error_code" => 404,
@@ -31,7 +28,7 @@ class UserController extends Controller
             return response()->json($result);
         }
         $result = [
-            "payload" => $user,
+            "payload" => $role,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -41,11 +38,8 @@ class UserController extends Controller
     public function store(Request $request) {
         
         $validator = $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
-            'branch_id' => 'required',
-            'role_id' => 'required'
+            'role_name' => 'required',
+            'status' => 'required'
         ]);
 
         $result = [
@@ -54,19 +48,13 @@ class UserController extends Controller
             "message" => "sukses"
         ];
 
-        
-        
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->branch_id = $request->branch_id;
-        $user->role_id = $request->role_id;
-        
-        $user->save();
+        $role = new Role();
+        $role->role_name = $request->role_name;
+        $role->status = $request->status;
+        $role->save();
         
         $result = [
-            "payload" => $user,
+            "payload" => $role,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -75,10 +63,8 @@ class UserController extends Controller
 
     public function update(Request $request, $id) {
         $validator = $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required',
-            'branch_id' => 'required',
-            'role_id' => 'required'
+            'role_name' => 'required',
+            'status' => 'required'
         ]);
 
         $result = [
@@ -87,8 +73,8 @@ class UserController extends Controller
             "message" => "sukses"
         ];
 
-        $user = User::find($id);
-        if($user == null) {
+        $role = Role::find($id);
+        if($role == null) {
             $result = [
                 "payload" => null,
                 "error_code" => 404,
@@ -96,16 +82,11 @@ class UserController extends Controller
             ];
             return response()->json($result);
         }
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->branch_id = $request->branch_id;
-        $user->role_id = $request->role_id;
-        if(isset($request->password)) {
-            $user->password = Hash::make($request->password);
-        }
-        $user->save();
+        $role->role_name = $request->role_name;
+        $role->status = $request->status;
+        $role->save();
         $result = [
-            "payload" => $user,
+            "payload" => $role,
             "error_code" => 200,
             "message" => "sukses"
         ];
@@ -113,8 +94,8 @@ class UserController extends Controller
     }
 
     public function delete($id) {
-        $user = User::find($id);
-        if($user == null) {
+        $role = Role::find($id);
+        if($role == null) {
             $result = [
                 "payload" => null,
                 "error_code" => 404,
@@ -122,14 +103,13 @@ class UserController extends Controller
             ];
             return response()->json($result);
         }
-        $user->delete();
+        $role->delete();
         $result = [
-            "payload" => $user,
+            "payload" => $role,
             "error_code" => 200,
             "message" => "sukses"
         ];
         return response()->json($result);
     }
 
-    
 }

@@ -31,4 +31,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+
+    public function role() {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+    public function branch() {
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
+    }
 }
